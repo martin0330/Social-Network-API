@@ -1,4 +1,4 @@
-const { Thought, User } = require('../models')
+const { Thought } = require('../models')
 
 const thoughtController = {
 
@@ -28,24 +28,9 @@ const thoughtController = {
             });
     },
 
-    createThought({ params, body }, res) {
-        console.log(params);
+    createThought({ body }, res) {
         Thought.create(body)
-            .then(({ _id }) => {
-                return thought.findOneAndUpdate(
-                    { _id: params.thoughtId },
-                    { $push: { thought: body } },
-                    { new: true }
-                );
-            })
-            .then(dbUserData => {
-                console.log(dbUserData);
-                if (!dbUserData) {
-                    res.status(404).json({ message: 'No user found with this id!' });
-                    return;
-                }
-                res.json(dbUserData);
-            })
+            .then(dbUserData => res.json(dbUserData))
             .catch(err => res.json(err));
     },
 
@@ -64,8 +49,18 @@ const thoughtController = {
 
     deleteThoughtById({ params }, res) {
         Thought.findOneAndDelete({ _id: params.thoughtId })
-            .then(dbUserData => res.json(dbUserData))
-            .catch(err => res.json(err));
+            .then((dbUserData) => {
+                if (!dbUserData) {
+                    console.log(dbUserData);
+                    res.status(404).json({ message: "No user found with this id!" });
+                    return;
+                }
+                res.json(dbUserData);
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(400).json(err);
+            });
     },
 
     createReaction({ params, body }, res) {
@@ -102,3 +97,5 @@ const thoughtController = {
             });
     },
 }
+
+module.exports = thoughtController;
