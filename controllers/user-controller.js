@@ -3,7 +3,7 @@ const { User } = require('../models')
 const userController = {
 
     getUserById({ params }, res) {
-        User.findOne({ _id: params.userId })
+        User.findOne({ _id: params.id })
             .then((dbUserData) => {
                 if (!dbUserData) {
                     res.status(404).json({ message: "No user found with this id." });
@@ -48,7 +48,7 @@ const userController = {
 
 
     deleteUserById({ params }, res) {
-        User.findOneAndDelete({ _id: params.userId })
+        User.findOneAndDelete({ _id: params.id })
             .then((dbUserData) => {
                 if (!dbUserData) {
                     console.log(dbUserData);
@@ -70,7 +70,7 @@ const userController = {
     },
 
     deleteFriend({ params }, res) {
-        User.findOneAndDelete({ _id: params.userId })
+        User.findOneAndDelete({ _id: params.id })
             .then(dbUserData => res.json(dbUserData))
             .catch(err => res.json(err));
     },
